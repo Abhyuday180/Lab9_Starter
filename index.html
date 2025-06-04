@@ -88,21 +88,171 @@
   </main>
 
   <script>
-    let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+  class ValidationError extends Error 
+  {
+    constructor(message)
+    {
+      super(message);
+      this.name = 'ValidationError';
+    }
+  }
+
+  const form = document.querySelector('form');
+  const output = document.querySelector('output');
+
+  form.addEventListener('submit', e => 
+    {
+    e.preventDefault();
+    const first = document.querySelector('#first-num').value.trim();
+    const second = document.querySelector('#second-num').value.trim();
+    const op = document.querySelector('#operator').value;
+
+    try 
+    {
+      if (first === '' || second === '') 
+      {
+        throw new ValidationError('Both operands are required 🎲');
+      }
+      if (isNaN(first) || isNaN(second)) 
+      {
+        throw new ValidationError('Operands must be numeric 🔢');
+      }
+
+      output.textContent = eval(`${first} ${op} ${second}`);
+    } 
+    catch (err)
+    {
+      console.error(err);
+      output.textContent = `Error: ${err.message}`;
+    } 
+    finally 
+    {
+      output.style.background = '#ffeeba'; // pale yellow
+      setTimeout(() => (output.style.background = ''), 500);
+    }
+  });
+
+  
+  const btns = Array.from(document.querySelectorAll('#error-btns > button'));
+
+  const TIMER_NAME  = 'demo-timer';
+  const GROUP_NAME  = 'demo-group';
+
+  const tableData = [
+    { animal: 'Dog', legs: 4, sound: 'Woof' },
+    { animal: 'Cat', legs: 4, sound: 'Meow' },
+    { animal: 'Duck', legs: 2, sound: 'Quack' }
+  ];
+
+  btns.forEach(btn => 
+    {
+    btn.addEventListener('click', () => 
+      {
+      switch (btn.textContent.trim()) 
+      {
+        case 'Console Log':
+          console.log('💬  console.log - It just works!', tableData);
+          break;
+
+        case 'Console Error':
+          console.error('🚨  console.error – Something went wrong!');
+          break;
+
+        case 'Console Count':
+          console.count('🧮  Count label');
+          break;
+
+        case 'Console Warn':
+          console.warn('⚠️  console.warn – Heads up…');
+          break;
+
+        case 'Console Assert':
+          console.assert(false, '❌  console.assert – This appears because the condition was false');
+          break;
+
+        case 'Console Clear':
+          console.clear();
+          break;
+
+        case 'Console Dir':
+          console.dir(document.body);
+          break;
+
+        case 'Console dirxml':
+          console.dirxml(document.body);
+          break;
+
+        case 'Console Group Start':
+          console.group(GROUP_NAME);
+          console.log('Inside the group – everything is indented');
+          break;
+
+        case 'Console Group End':
+          console.groupEnd(GROUP_NAME);
+          break;
+
+        case 'Console Table':
+          console.table(tableData);
+          break;
+
+        case 'Start Timer':
+          console.time(TIMER_NAME);
+          break;
+
+        case 'End Timer':
+          console.timeEnd(TIMER_NAME);
+          break;
+
+        case 'Console Trace':
+          (function first() 
+           {
+            (function second() 
+             {
+              console.trace('Breadcrumbs back to me 👣');
+            })();
+          })();
+          break;
+
+        case 'Trigger a Global Error':
+          nonexistentFunctionCall(); 
+          break;
+      }
     });
+  });
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+ 
+  function riskyOperation() 
+  {
+    try 
+    {
+      console.log('Trying a risky operation…');
+      throw new Error('Kaboom!');
+    } 
+    catch (err) 
+    {
+      console.error('Caught inside riskyOperation:', err.message);
+      throw err;
+    } 
+    finally 
+    {
+      console.log('riskyOperation finally block always runs ✅');
+    }
+  }
 
-    // Start your code here
-    // You may move this JS to another file if you wish
-  </script>
+  document.addEventListener('keydown', e => {
+    if (e.key === 'r') {
+      try 
+      {
+        riskyOperation();
+      } 
+      catch (err) 
+      {
+        console.warn('Handled in outer scope:', err.message);
+      }
+    }
+  });
+</script>
+
 </body>
 
 </html>
