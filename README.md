@@ -1,2 +1,8 @@
 # Lab 9 - Starter
-abhyuday180.github.io/Lab9_Starter
+# Errors
+
+[screenshot](TrackJS.png)
+
+# Page
+
+[Github Page](https://Abhyuday180.github.io/Lab9_Starter/)
